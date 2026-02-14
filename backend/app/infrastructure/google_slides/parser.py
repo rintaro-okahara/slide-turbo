@@ -39,11 +39,23 @@ class GoogleSlidesParser:
         slides = presentation.get("slides", [])
 
         pages = []
+        first_slide_thumbnail_url = ""
         for i, slide in enumerate(slides):
+            page_object_id = slide.get("objectId")
+            if i == 0 and page_object_id:
+                try:
+                    first_slide_thumbnail_url = (
+                        self.client.get_slide_thumbnail(
+                            presentation_id, page_object_id
+                        )
+                    )
+                except Exception:
+                    # サムネイル取得失敗は import 全体を失敗させない
+                    first_slide_thumbnail_url = ""
             pages.append(
                 {
                     "pageNum": i + 1,
-                    "pageObjectId": slide.get("objectId"),
+                    "pageObjectId": page_object_id,
                     "elements": self._extract_elements(slide),
                 }
             )
@@ -53,6 +65,7 @@ class GoogleSlidesParser:
             "contents": {
                 "presentationId": presentation_id,
                 "pageCount": len(slides),
+                "thumbnailUrl": first_slide_thumbnail_url,
                 "pages": pages,
             },
         }

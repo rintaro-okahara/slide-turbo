@@ -25,6 +25,7 @@ class TemplateResponseDTO(BaseModel):
     owner_id: str
     title: str
     contents: Any
+    thumbnail_url: Optional[str] = None
     created_at: datetime
     updated_at: datetime
 
@@ -32,4 +33,5 @@ class TemplateResponseDTO(BaseModel):
 class TemplateListItemDTO(BaseModel):
     id: str
     title: str
+    thumbnail_url: Optional[str] = None
     created_at: datetime

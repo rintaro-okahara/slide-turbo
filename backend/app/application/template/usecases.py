@@ -23,6 +23,15 @@ class TemplateUseCases:
         self.repo = repo
         self.slides_parser = slides_parser
 
+    @staticmethod
+    def _extract_thumbnail_url(contents: object) -> str | None:
+        if not isinstance(contents, dict):
+            return None
+        thumbnail = contents.get("thumbnailUrl")
+        if isinstance(thumbnail, str) and thumbnail:
+            return thumbnail
+        return None
+
     async def import_from_google_slides(
         self, owner_id: str, dto: ImportFromGoogleSlidesDTO
     ) -> TemplateResponseDTO:
@@ -38,6 +47,7 @@ class TemplateUseCases:
             owner_id=template.owner_id,
             title=template.title,
             contents=template.contents,
+            thumbnail_url=self._extract_thumbnail_url(template.contents),
             created_at=template.created_at,
             updated_at=template.updated_at,
         )
@@ -46,7 +56,12 @@ class TemplateUseCases:
         """オーナーのテンプレート一覧"""
         templates = await self.repo.find_by_owner(owner_id)
         return [
-            TemplateListItemDTO(id=t.id, title=t.title, created_at=t.created_at)
+            TemplateListItemDTO(
+                id=t.id,
+                title=t.title,
+                thumbnail_url=self._extract_thumbnail_url(t.contents),
+                created_at=t.created_at,
+            )
             for t in templates
         ]
 
@@ -60,6 +75,7 @@ class TemplateUseCases:
             owner_id=template.owner_id,
             title=template.title,
             contents=template.contents,
+            thumbnail_url=self._extract_thumbnail_url(template.contents),
             created_at=template.created_at,
             updated_at=template.updated_at,
         )
@@ -78,6 +94,7 @@ class TemplateUseCases:
             owner_id=template.owner_id,
             title=template.title,
             contents=template.contents,
+            thumbnail_url=self._extract_thumbnail_url(template.contents),
             created_at=template.created_at,
             updated_at=template.updated_at,
         )

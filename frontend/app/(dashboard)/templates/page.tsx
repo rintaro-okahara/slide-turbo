@@ -67,7 +67,12 @@ export default function TemplatesPage() {
     try {
       const t = await importTemplate(importUrl);
       setTemplates((prev) => [
-        { id: t.id, title: t.title, created_at: t.created_at },
+        {
+          id: t.id,
+          title: t.title,
+          thumbnail_url: t.thumbnail_url ?? null,
+          created_at: t.created_at,
+        },
         ...prev,
       ]);
       setImportOpen(false);
@@ -199,8 +204,18 @@ export default function TemplatesPage() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {templates.map((t) => (
             <Card key={t.id} className="group">
-              <div className="flex aspect-video items-center justify-center rounded-t-lg bg-muted">
-                <Layers className="h-8 w-8 text-muted-foreground/30" />
+              <div className="relative aspect-video w-full overflow-hidden rounded-t-lg bg-muted">
+                {t.thumbnail_url ? (
+                  <img
+                    src={t.thumbnail_url}
+                    alt={t.title}
+                    className="h-full w-full object-cover"
+                  />
+                ) : (
+                  <div className="flex h-full items-center justify-center">
+                    <Layers className="h-8 w-8 text-muted-foreground/30" />
+                  </div>
+                )}
               </div>
               <CardHeader className="flex-row items-start justify-between p-4">
                 <div className="min-w-0 flex-1">

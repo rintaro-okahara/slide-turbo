@@ -139,7 +139,14 @@ const now = () => new Date().toISOString();
 // ── Templates ────────────────────────────────
 
 export async function getTemplates(): Promise<TemplateListItem[]> {
-  if (isDevToken()) return devStore.templates.map((t) => ({ id: t.id, title: t.title, created_at: t.created_at }));
+  if (isDevToken()) {
+    return devStore.templates.map((t) => ({
+      id: t.id,
+      title: t.title,
+      thumbnail_url: t.thumbnail_url ?? null,
+      created_at: t.created_at,
+    }));
+  }
   return request<TemplateListItem[]>("/api/v1/templates");
 }
 
@@ -156,7 +163,15 @@ export async function importTemplate(
   presentationUrl: string
 ): Promise<Template> {
   if (isDevToken()) {
-    const t: Template = { id: uid(), owner_id: "dev-user-001", title: `Imported: ${presentationUrl.slice(-10)}`, contents: {}, created_at: now(), updated_at: now() };
+    const t: Template = {
+      id: uid(),
+      owner_id: "dev-user-001",
+      title: `Imported: ${presentationUrl.slice(-10)}`,
+      contents: {},
+      thumbnail_url: null,
+      created_at: now(),
+      updated_at: now(),
+    };
     devStore.templates.push(t);
     return t;
   }

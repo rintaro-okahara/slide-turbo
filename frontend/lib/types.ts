@@ -27,6 +27,7 @@ export interface Template {
   owner_id: string;
   title: string;
   contents: unknown; // JSON
+  thumbnail_url?: string | null;
   created_at: string;
   updated_at: string;
 }
@@ -34,6 +35,7 @@ export interface Template {
 export interface TemplateListItem {
   id: string;
   title: string;
+  thumbnail_url?: string | null;
   created_at: string;
 }
 
